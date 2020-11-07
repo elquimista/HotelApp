@@ -1,0 +1,18 @@
+<div class="page-header">
+  <%= link_to hotels_path, class: 'btn btn-default' do %>
+    All Hotels
+  <% end %>
+  <%= link_to edit_hotel_path(@hotel), class: 'btn btn-primary' do %>
+    Edit
+  <% end %>
+  <h1>Show hotel</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt>Name:</dt>
+  <dd><%= @hotel.name %></dd>
+
+  <dt>Location:</dt>
+  <dd><%= @hotel.location %></dd>
+
+</dl>

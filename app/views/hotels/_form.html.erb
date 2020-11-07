@@ -1,0 +1,45 @@
+<%= form_with(model: hotel, local: true) do |form| %>
+  <% if hotel.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(hotel.errors.count, "error") %> prohibited this hotel from being saved:</h2>
+
+      <ul>
+      <% hotel.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :location %>
+    <%= form.text_field :location, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :inventory %>
+    <br />
+    ...
+  </div>
+
+  <div class="form-group">
+    <% if hotel.persisted? %>
+      <div class="float-right">
+        <%= link_to 'Destroy', hotel, method: :delete, class: "text-danger", data: { confirm: 'Are you sure?' } %>
+      </div>
+    <% end %>
+
+    <%= form.submit class: 'btn btn-primary' %>
+
+    <% if hotel.persisted? %>
+      <%= link_to "Cancel", hotel, class: "btn btn-link" %>
+    <% else %>
+      <%= link_to "Cancel", hotels_path, class: "btn btn-link" %>
+    <% end %>
+  </div>
+<% end %>
