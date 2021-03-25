@@ -4,7 +4,11 @@ class HotelsController < ApplicationController
   # GET /hotels
   # GET /hotels.json
   def index
-    @hotels = Hotel.all
+    @hotels = if user_signed_in?
+      Hotel.all
+    else
+      Hotel.where(RoomType.select(:id).where('hotel_id = hotels.id AND available = 1').arel.exists)
+    end
   end
 
   # GET /hotels/1
@@ -69,6 +73,6 @@ class HotelsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def hotel_params
-      params.require(:hotel).permit(:name, :location)
+      params.require(:hotel).permit(:name, :location, room_types_attributes: %i[id name available _destroy])
     end
 end

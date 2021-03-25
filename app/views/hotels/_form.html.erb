@@ -27,6 +27,8 @@
     ...
   </div>
 
+  <%= react_component('RoomTypesArrayField/', { initialValue: hotel.room_types }) %>
+
   <div class="form-group">
     <% if hotel.persisted? %>
       <div class="float-right">

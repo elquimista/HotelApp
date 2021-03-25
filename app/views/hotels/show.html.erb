@@ -15,4 +15,10 @@
   <dt>Location:</dt>
   <dd><%= @hotel.location %></dd>
 
+  <dt>Available room types:</dt>
+  <dd><%= @hotel.room_types.available.pluck(:name).to_sentence.presence || 'None' %></dd>
+
+  <dt>Unavailable room types:</dt>
+  <dd><%= @hotel.room_types.unavailable.pluck(:name).to_sentence.presence || 'None' %></dd>
+
 </dl>
