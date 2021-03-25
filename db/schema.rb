@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 2021_03_24_022119) do
     t.boolean "available"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["hotel_id", "name"], name: "index_room_types_on_hotel_id_and_name", unique: true
     t.index ["hotel_id"], name: "index_room_types_on_hotel_id"
   end
 
