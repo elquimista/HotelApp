@@ -1,6 +1,8 @@
 class HotelsController < ApplicationController
   before_action :set_hotel, only: [:show, :edit, :update, :destroy]
 
+  rescue_from ActiveRecord::RecordNotUnique, with: :unprocessable_entity
+
   # GET /hotels
   # GET /hotels.json
   def index
@@ -74,5 +76,13 @@ class HotelsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def hotel_params
       params.require(:hotel).permit(:name, :location, room_types_attributes: %i[id name available _destroy])
+    end
+
+    def unprocessable_entity(ex)
+      respond_to do |format|
+        @hotel.errors.add(:base, ex.message)
+        format.html { render :edit }
+        format.json { render json: @hotel.errors, status: :unprocessable_entity }
+      end
     end
 end

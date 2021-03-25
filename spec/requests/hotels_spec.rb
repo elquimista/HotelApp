@@ -16,11 +16,37 @@ RSpec.describe "/hotels", type: :request do
   # Hotel. As you add validations to Hotel, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      'name' => 'Comfort Inn & Suites Market Ctr',
+      'location' => '7138 N Stemmons Fwy, Dallas, TX, 75247',
+      'room_types_attributes' => {
+        '0' => {
+          'name' => 'Single king non-smoking',
+          'available' => '1'
+        },
+        '1' => {
+          'name' => 'Double queen ocean view',
+          'available' => '1'
+        }
+      }
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      'name' => 'Comfort Inn & Suites Market Ctr',
+      'location' => '7138 N Stemmons Fwy, Dallas, TX, 75247',
+      'room_types_attributes' => {
+        '0' => {
+          'name' => 'Single king non-smoking',
+          'available' => '1'
+        },
+        '1' => {
+          'name' => 'Single king non-smoking',
+          'available' => '1'
+        }
+      }
+    }
   }
 
   describe "GET /index" do
@@ -56,10 +82,11 @@ RSpec.describe "/hotels", type: :request do
 
   describe "POST /create" do
     context "with valid parameters" do
-      it "creates a new Hotel" do
+      it "creates a new Hotel with room types" do
         expect {
           post hotels_url, params: { hotel: valid_attributes }
         }.to change(Hotel, :count).by(1)
+         .and change(RoomType, :count).by(2)
       end
 
       it "redirects to the created hotel" do
@@ -85,19 +112,47 @@ RSpec.describe "/hotels", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        ->(record) {
+          {
+            'name' => 'Renaissance Dallas Addison',
+            'location' => '15201 Dallas Parkway, Dallas, TX, 75001',
+            'room_types_attributes' => {
+              '0' => {
+                'id' => record.room_types[0].id,
+                'name' => 'Single king non-smoking',
+                'available' => '0'
+              },
+              '1' => {
+                'id' => record.room_types[1].id,
+                '_destroy' => '1'
+              },
+              '2' => {
+                'name' => 'Luxury suite with balcony',
+                'available' => '1'
+              },
+              '3' => {
+                'name' => 'Luxury suite with balcony (VIP)',
+                'available' => '1'
+              }
+            }
+          }
+        }
       }
 
       it "updates the requested hotel" do
         hotel = Hotel.create! valid_attributes
-        patch hotel_url(hotel), params: { hotel: new_attributes }
+        new_attrs = new_attributes[hotel]
+        patch hotel_url(hotel), params: { hotel: new_attrs }
         hotel.reload
-        skip("Add assertions for updated state")
+
+        expect(hotel.name).to be == new_attrs['name']
+        expect(hotel.location).to be == new_attrs['location']
+        expect(hotel.room_types.size).to be == 3
       end
 
       it "redirects to the hotel" do
         hotel = Hotel.create! valid_attributes
-        patch hotel_url(hotel), params: { hotel: new_attributes }
+        patch hotel_url(hotel), params: { hotel: new_attributes[hotel] }
         hotel.reload
         expect(response).to redirect_to(hotel_url(hotel))
       end
